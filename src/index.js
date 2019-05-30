@@ -4,7 +4,8 @@ import { Provider } from 'react-redux'
 import store from './store'
 import App from './containers/App'
 import * as serviceWorker from './serviceWorker'
-import ApolloClient, { gql } from "apollo-boost"
+import ApolloClient from 'apollo-boost'
+import { ApolloProvider } from 'react-apollo'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -14,28 +15,17 @@ export const UserContext = React.createContext({
 })
 
 const client = new ApolloClient({
-	uri: "http://localhost:4000/graphql"
-});
-
-client
-	.query({
-		query: gql`
-			{
-				post(postId: 1) {
-					id
-					title
-				}
-			}
-		`
-	})
-	.then(result => console.log(result));
+  uri: 'http://localhost:4000/graphql'
+})
 
 render(
-  <Provider store={store}>
-    <UserContext.Provider value={signedInUser}>
-      <App />
-    </UserContext.Provider>
-  </Provider>,
+  <ApolloProvider client={client}>
+    <Provider store={store}>
+      <UserContext.Provider value={signedInUser}>
+        <App />
+      </UserContext.Provider>
+    </Provider>
+  </ApolloProvider>,
   document.getElementById('root')
 )
 
