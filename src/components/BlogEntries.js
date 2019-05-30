@@ -1,26 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { getPosts } from '../modules/posts'
 import BlogPost from './BlogPost'
 
-class BlogEntries extends Component {
+export class BlogEntries extends Component {
   static propTypes = {
     posts: PropTypes.array,
     isLoading: PropTypes.bool,
-    getPosts: PropTypes.func
+    error: PropTypes.string
   }
 
   static defaultPropTypes = {
     posts: []
   }
 
-  componentDidMount() {
-    this.props.getPosts()
-  }
-
   render() {
-    const { posts, isLoading } = this.props
+    const { posts, isLoading, error } = this.props
+
+    if (error) {
+      return <div>{error}</div>
+    }
 
     return (
       <div className="col-md-8">
@@ -57,15 +55,3 @@ class BlogEntries extends Component {
     )
   }
 }
-
-const mapStateToProps = ({ posts }) => {
-  return {
-    posts: posts.items,
-    isLoading: posts.isLoading
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  { getPosts }
-)(BlogEntries)

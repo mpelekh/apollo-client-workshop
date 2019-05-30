@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import BlogEntries from '../components/BlogEntries'
+import { BlogEntriesContainer } from './BlogEntriesContainer'
 import DetailedPost from '../components/DetailedPost'
 
 class Home extends Component {
@@ -8,7 +8,11 @@ class Home extends Component {
       match: { params }
     } = this.props
 
-    return params.id ? <DetailedPost id={params.id} /> : <BlogEntries />
+    return params.id ? (
+      <DetailedPost id={params.id} />
+    ) : (
+      <BlogEntriesContainer />
+    )
   }
 }
 
