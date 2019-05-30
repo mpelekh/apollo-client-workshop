@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { BlogEntriesContainer } from './BlogEntriesContainer'
-import DetailedPost from '../components/DetailedPost'
+import { DetailedPostContainer } from './DetailedPostContainer'
 
 class Home extends Component {
   render() {
@@ -9,7 +9,7 @@ class Home extends Component {
     } = this.props
 
     return params.id ? (
-      <DetailedPost id={params.id} />
+      <DetailedPostContainer id={params.id} />
     ) : (
       <BlogEntriesContainer />
     )

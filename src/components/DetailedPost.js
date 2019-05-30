@@ -1,19 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { addComment } from '../modules/comments'
-import { getPosts } from '../modules/posts'
 
-class DetailedPost extends PureComponent {
+export class DetailedPost extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
     date: PropTypes.string,
     author: PropTypes.string,
     comments: PropTypes.array,
-    isPostsLoading: PropTypes.bool,
-    addComment: PropTypes.func,
-    getPosts: PropTypes.func
+    isPostLoading: PropTypes.bool,
+    error: PropTypes.string
   }
 
   state = {
@@ -37,14 +33,22 @@ class DetailedPost extends PureComponent {
     })
   }
 
-  componentDidMount() {
-    this.props.getPosts()
-  }
-
   render() {
-    const { title, body, date, author, comments, isPostsLoading } = this.props
+    const {
+      title,
+      body,
+      date,
+      author,
+      comments,
+      isPostLoading,
+      error
+    } = this.props
 
-    if (isPostsLoading) {
+    if (error) {
+      return <div>{error}</div>
+    }
+
+    if (isPostLoading) {
       return <div>Loading...</div>
     }
 
@@ -116,14 +120,3 @@ class DetailedPost extends PureComponent {
     )
   }
 }
-
-const mapStateToProps = ({ posts, comments }, { id }) => ({
-  comments,
-  isPostsLoading: posts.isLoading,
-  ...posts.items.find(({ id: postId }) => postId === Number(id))
-})
-
-export default connect(
-  mapStateToProps,
-  { addComment, getPosts }
-)(DetailedPost)
