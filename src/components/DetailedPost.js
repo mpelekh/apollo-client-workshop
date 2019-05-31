@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 export class DetailedPost extends PureComponent {
   static propTypes = {
+    postId: PropTypes.string,
     title: PropTypes.string,
     body: PropTypes.string,
     date: PropTypes.string,
@@ -27,7 +28,12 @@ export class DetailedPost extends PureComponent {
   onSubmit = event => {
     event.preventDefault()
 
-    this.props.addComment(this.state.comment)
+    this.props.addComment({
+      variables: {
+        postId: this.props.postId,
+        comment: { body: this.state.comment, name: 'name', email: 'email' }
+      }
+    })
     this.setState({
       comment: ''
     })
