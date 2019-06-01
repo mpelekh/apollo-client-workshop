@@ -1,6 +1,6 @@
 import React from 'react'
 import { Query, Mutation } from 'react-apollo'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { DetailedPost } from '../components/DetailedPost'
 
 const GET_POST = gql`

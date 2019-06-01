@@ -1,9 +1,9 @@
 import React from 'react'
 import { Query } from 'react-apollo'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { BlogEntries } from '../components/BlogEntries'
 
-const graphqlQuery = gql`
+const GET_POSTS = gql`
   {
     posts(limit: 20) {
       id
@@ -18,7 +18,7 @@ const graphqlQuery = gql`
 
 export function BlogEntriesContainer() {
   return (
-    <Query query={graphqlQuery}>
+    <Query query={GET_POSTS}>
       {({ loading, error, data: { posts = [] } = {} }) => {
         return (
           <BlogEntries
