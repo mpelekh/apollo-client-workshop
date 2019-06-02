@@ -10,11 +10,16 @@ export class DetailedPost extends PureComponent {
     author: PropTypes.string,
     comments: PropTypes.array,
     isPostLoading: PropTypes.bool,
-    error: PropTypes.string
+    error: PropTypes.string,
+    subscribeToNewComments: PropTypes.func
   }
 
   state = {
     comment: ''
+  }
+
+  componentDidMount() {
+    this.props.subscribeToNewComments()
   }
 
   onChange = event => {

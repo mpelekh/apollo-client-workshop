@@ -35,31 +35,29 @@ const ADD_COMMENT = gql`
   }
 `
 
+const COMMENTS_SUBSCRIPTION = gql`
+  subscription commentAdded($postId: ID!) {
+    commentAdded(postId: $postId) {
+      id
+      postId
+      name
+      email
+      body
+    }
+  }
+`
+
 export function DetailedPostContainer({ id }) {
   return (
     <Query query={GET_POST} variables={{ postId: id }}>
       {({
         loading,
         error,
-        data: { post: { title, body, author, comments } = {} } = {}
+        data: { post: { title, body, author, comments } = {} } = {},
+        subscribeToMore
       }) => {
         return (
-          <Mutation
-            mutation={ADD_COMMENT}
-            update={(cache, { data: { addComment } }) => {
-              console.log(cache)
-              const { post } = cache.readQuery({
-                query: GET_POST,
-                variables: { postId: id }
-              })
-              cache.writeQuery({
-                query: GET_POST,
-                variables: { postId: id },
-                data: {
-                  post: { ...post, comments: [...post.comments, addComment] }
-                }
-              })
-            }}>
+          <Mutation mutation={ADD_COMMENT}>
             {addComment => {
               return (
                 <DetailedPost
@@ -71,6 +69,23 @@ export function DetailedPostContainer({ id }) {
                   comments={comments}
                   error={error && error.message}
                   addComment={addComment}
+                  subscribeToNewComments={() =>
+                    subscribeToMore({
+                      document: COMMENTS_SUBSCRIPTION,
+                      variables: { postId: id },
+                      updateQuery: (prev, { subscriptionData }) => {
+                        if (!subscriptionData.data) return prev
+                        const newComment = subscriptionData.data.commentAdded
+
+                        return Object.assign({}, prev, {
+                          post: {
+                            ...prev.post,
+                            comments: [...prev.post.comments, newComment]
+                          }
+                        })
+                      }
+                    })
+                  }
                 />
               )
             }}
