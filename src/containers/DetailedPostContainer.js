@@ -25,12 +25,15 @@ const GET_POST = gql`
 
 const ADD_COMMENT = gql`
   mutation AddTodo($postId: ID!, $comment: InputComment!) {
-    addComment(postId: $postId, comment: $comment) {
+    addCommentToPost(postId: $postId, comment: $comment) {
       id
-      postId
-      name
-      email
-      body
+      comments {
+        id
+        postId
+        name
+        email
+        body
+      }
     }
   }
 `
@@ -44,22 +47,7 @@ export function DetailedPostContainer({ id }) {
         data: { post: { title, body, author, comments } = {} } = {}
       }) => {
         return (
-          <Mutation
-            mutation={ADD_COMMENT}
-            update={(cache, { data: { addComment } }) => {
-              console.log(cache)
-              const { post } = cache.readQuery({
-                query: GET_POST,
-                variables: { postId: id }
-              })
-              cache.writeQuery({
-                query: GET_POST,
-                variables: { postId: id },
-                data: {
-                  post: { ...post, comments: [...post.comments, addComment] }
-                }
-              })
-            }}>
+          <Mutation mutation={ADD_COMMENT}>
             {addComment => {
               return (
                 <DetailedPost
