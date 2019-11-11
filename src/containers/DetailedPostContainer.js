@@ -2,49 +2,47 @@ import React from 'react'
 import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import { DetailedPost } from '../components/DetailedPost'
+import { POST_FRAGMENT } from './BlogEntriesContainer'
+
+const COMMENT_FRAGMENT = gql`
+  fragment CommentFragment on Comment {
+    id
+    postId
+    name
+    email
+    body
+  }
+`
 
 const GET_POST = gql`
   query Post($postId: ID!) {
     post(postId: $postId) {
-      id
-      title
-      body
+      ...PostFragment
       comments {
-        id
-        postId
-        name
-        email
-        body
-      }
-      author: user {
-        email
+        ...CommentFragment
       }
     }
   }
+  ${POST_FRAGMENT}
+  ${COMMENT_FRAGMENT}
 `
 
 const ADD_COMMENT = gql`
   mutation AddTodo($postId: ID!, $comment: InputComment!) {
     addComment(postId: $postId, comment: $comment) {
-      id
-      postId
-      name
-      email
-      body
+      ...CommentFragment
     }
   }
+  ${COMMENT_FRAGMENT}
 `
 
 const COMMENTS_SUBSCRIPTION = gql`
   subscription commentAdded($postId: ID!) {
     commentAdded(postId: $postId) {
-      id
-      postId
-      name
-      email
-      body
+      ...CommentFragment
     }
   }
+  ${COMMENT_FRAGMENT}
 `
 
 export function DetailedPostContainer({ id }) {

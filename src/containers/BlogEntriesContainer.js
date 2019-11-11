@@ -3,17 +3,24 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { BlogEntries } from '../components/BlogEntries'
 
+export const POST_FRAGMENT = gql`
+  fragment PostFragment on Post {
+    id
+    title
+    body
+    author: user {
+      email
+    }
+  }
+`
+
 const GET_POSTS = gql`
   {
     posts(limit: 20) {
-      id
-      title
-      body
-      author: user {
-        email
-      }
+      ...PostFragment
     }
   }
+  ${POST_FRAGMENT}
 `
 
 export function BlogEntriesContainer() {
